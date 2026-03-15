@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actuals Data - Self Service</title>
+    <style>
+        /* ── CSS Variables ─────────────────────────────────────────── */
+        :root {
+            --bg:           #f8fafc;
+            --bg-card:      #ffffff;
+            --bg-sidebar:   #ffffff;
+            --bg-input:     #f1f5f9;
+            --bg-header:    #ffffff;
+            --bg-table-hd:  #f8fafc;
+            --bg-total:     #f1f5f9;
+            --bg-sticky:    #ffffff;
+            --border:       #e2e8f0;
+            --border-input: #cbd5e1;
+            --text:         #0f172a;
+            --text-2:       #475569;
+            --text-3:       #94a3b8;
+            --text-th:      #64748b;
+            --text-td:      #334155;
+            --accent:       #2563eb;
+            --accent-light: #eff6ff;
+            --accent-2:     #7c3aed;
+            --stat-blue:    #2563eb;
+            --stat-green:   #059669;
+            --stat-purple:  #7c3aed;
+            --stat-orange:  #d97706;
+            --zero:         #e2e8f0;
+            --hover-row:    rgba(37,99,235,0.04);
+            --shadow:       0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+            --shadow-lg:    0 4px 16px rgba(0,0,0,0.08);
+            --btn-ghost-bg: #f1f5f9;
+            --btn-ghost-c:  #475569;
+            --scrollbar:    #cbd5e1;
+        }
+
+        [data-theme="dark"] {
+            --bg:           #0b1120;
+            --bg-card:      #131f35;
+            --bg-sidebar:   #0f1a2e;
+            --bg-input:     #0b1120;
+            --bg-header:    #0f1a2e;
+            --bg-table-hd:  #090e1c;
+            --bg-total:     #090e1c;
+            --bg-sticky:    #131f35;
+            --border:       #1e3a5f;
+            --border-input: #1e3a5f;
+            --text:         #f1f5f9;
+            --text-2:       #94a3b8;
+            --text-3:       #475569;
+            --text-th:      #60a5fa;
+            --text-td:      #cbd5e1;
+            --accent:       #3b82f6;
+            --accent-light: rgba(59,130,246,0.08);
+            --accent-2:     #8b5cf6;
+            --stat-blue:    #60a5fa;
+            --stat-green:   #34d399;
+            --stat-purple:  #a78bfa;
+            --stat-orange:  #fb923c;
+            --zero:         #1e3a5f;
+            --hover-row:    rgba(59,130,246,0.07);
+            --shadow:       0 1px 3px rgba(0,0,0,0.4);
+            --shadow-lg:    0 4px 24px rgba(0,0,0,0.5);
+            --btn-ghost-bg: #0f1a2e;
+            --btn-ghost-c:  #64748b;
+            --scrollbar:    #1e3a5f;
+        }
+
+        /* ── Reset & Base ───────────────────────────────────────────── */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            transition: background 0.25s, color 0.25s;
+        }
+
+        /* ── Header ─────────────────────────────────────────────────── */
+        header {
+            background: var(--bg-header);
+            border-bottom: 1px solid var(--border);
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            box-shadow: var(--shadow);
+            position: relative;
+            z-index: 10;
+        }
+
+        .header-logo {
+            width: 34px; height: 34px;
+            background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            color: white;
+            font-size: 16px;
+            font-weight: 800;
+            flex-shrink: 0;
+            letter-spacing: -1px;
+        }
+
+        header h1 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--text);
+            letter-spacing: -0.02em;
+        }
+
+        .header-sub {
+            font-size: 0.72rem;
+            color: var(--text-2);
+            margin-top: 1px;
+        }
+
+        .header-right {
+            margin-left: auto;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        /* Dark mode toggle */
+        .dark-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 5px 12px 5px 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: var(--text-2);
+            user-select: none;
+        }
+
+        .dark-toggle:hover { border-color: var(--accent); color: var(--accent); }
+
+        .toggle-track {
+            width: 28px; height: 16px;
+            background: var(--border);
+            border-radius: 8px;
+            position: relative;
+            transition: background 0.2s;
+            flex-shrink: 0;
+        }
+
+        [data-theme="dark"] .toggle-track {
+            background: var(--accent);
+        }
+
+        .toggle-thumb {
+            width: 12px; height: 12px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 2px; left: 2px;
+            transition: transform 0.2s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+
+        [data-theme="dark"] .toggle-thumb { transform: translateX(12px); }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 2px;
+            background: var(--bg-input);
+            border-radius: 7px;
+            padding: 3px;
+            border: 1px solid var(--border);
+        }
+
+        .tab {
+            padding: 5px 14px;
+            border-radius: 5px;
+            font-size: 0.78rem;
+            font-weight: 500;
+            cursor: pointer;
+            color: var(--text-2);
+            border: none;
+            background: transparent;
+            transition: all 0.15s;
+        }
+
+        .tab.active {
+            background: var(--bg-card);
+            color: var(--text);
+            box-shadow: var(--shadow);
+        }
+
+        /* Status badge */
+        .badge {
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            border: 1px solid var(--border);
+            background: var(--bg-input);
+            color: var(--text-2);
+        }
+
+        .badge.ok {
+            background: #f0fdf4;
+            color: #15803d;
+            border-color: #bbf7d0;
+        }
+
+        [data-theme="dark"] .badge.ok {
+            background: #052e16;
+            color: #4ade80;
+            border-color: #14532d;
+        }
+
+        .badge.err {
+            background: #fef2f2;
+            color: #dc2626;
+            border-color: #fecaca;
+        }
+
+        /* ── Layout ──────────────────────────────────────────────────── */
+        .layout {
+            display: grid;
+            grid-template-columns: 270px 1fr;
+            height: calc(100vh - 61px);
+        }
+
+        /* ── Sidebar ─────────────────────────────────────────────────── */
+        .sidebar {
+            background: var(--bg-sidebar);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: background 0.25s, border-color 0.25s;
+        }
+
+        .sidebar-scroll {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px 14px;
+        }
+
+        .sidebar-scroll::-webkit-scrollbar { width: 4px; }
+        .sidebar-scroll::-webkit-scrollbar-track { background: transparent; }
+        .sidebar-scroll::-webkit-scrollbar-thumb { background: var(--scrollbar); border-radius: 2px; }
+
+        .section-label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-3);
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        .filter-group {
+            margin-bottom: 12px;
+        }
+
+        .filter-group label {
+            display: block;
+            font-size: 0.73rem;
+            color: var(--text-2);
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+
+        .filter-group select {
+            width: 100%;
+            background: var(--bg-input);
+            border: 1px solid var(--border-input);
+            color: var(--text);
+            border-radius: 6px;
+            padding: 4px 6px;
+            font-size: 0.77rem;
+            height: 78px;
+            transition: border-color 0.15s, background 0.25s;
+        }
+
+        .filter-group select:focus { outline: none; border-color: var(--accent); }
+
+        [data-theme="dark"] .filter-group select option:checked { background: #1d4ed8; }
+        [data-theme="light"] .filter-group select option:checked { background: #bfdbfe; }
+
+        .filter-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .filter-row .filter-group { margin-bottom: 0; }
+
+        .filter-row input {
+            width: 100%;
+            background: var(--bg-input);
+            border: 1px solid var(--border-input);
+            color: var(--text);
+            border-radius: 6px;
+            padding: 7px 8px;
+            font-size: 0.77rem;
+            transition: border-color 0.15s;
+        }
+
+        .filter-row input:focus { outline: none; border-color: var(--accent); }
+        .filter-row input::placeholder { color: var(--text-3); }
+
+        .divider { border: none; border-top: 1px solid var(--border); margin: 14px 0; }
+
+        .sidebar-actions {
+            padding: 12px 14px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 9px 14px;
+            border: none;
+            border-radius: 7px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+            width: 100%;
+            text-align: center;
+            letter-spacing: -0.01em;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+            color: white;
+            box-shadow: 0 2px 8px rgba(37,99,235,0.25);
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 4px 14px rgba(37,99,235,0.4);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: var(--accent-light);
+            color: var(--accent);
+            border: 1px solid var(--accent);
+        }
+
+        .btn-secondary:hover { opacity: 0.85; }
+
+        .btn-ghost {
+            background: var(--btn-ghost-bg);
+            color: var(--btn-ghost-c);
+            border: 1px solid var(--border);
+        }
+
+        .btn-ghost:hover { border-color: var(--border-input); color: var(--text-2); }
+
+        .share-link-box {
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 8px 10px;
+            font-size: 0.7rem;
+            color: var(--accent);
+            cursor: pointer;
+            word-break: break-all;
+            line-height: 1.5;
+            display: none;
+            transition: border-color 0.15s;
+        }
+
+        .share-link-box:hover { border-color: var(--accent); }
+
+        /* ── Main ────────────────────────────────────────────────────── */
+        .main {
+            background: var(--bg);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: background 0.25s;
+        }
+
+        #pivot-view {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            padding: 18px;
+            gap: 14px;
+            overflow: hidden;
+        }
+
+        /* Stat cards */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            flex-shrink: 0;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px 16px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: background 0.25s, border-color 0.25s;
+        }
+
+        .stat-card::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            border-radius: 10px 10px 0 0;
+        }
+
+        .stat-card.blue::after  { background: linear-gradient(90deg, #2563eb, #6366f1); }
+        .stat-card.green::after { background: linear-gradient(90deg, #059669, #34d399); }
+        .stat-card.purple::after{ background: linear-gradient(90deg, #7c3aed, #a78bfa); }
+        .stat-card.orange::after{ background: linear-gradient(90deg, #d97706, #fb923c); }
+
+        .stat-label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-3);
+            margin-bottom: 6px;
+            font-weight: 700;
+        }
+
+        .stat-value {
+            font-size: 1.55rem;
+            font-weight: 800;
+            line-height: 1;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .stat-card.blue .stat-value   { color: var(--stat-blue); }
+        .stat-card.green .stat-value  { color: var(--stat-green); }
+        .stat-card.purple .stat-value { color: var(--stat-purple); }
+        .stat-card.orange .stat-value { color: var(--stat-orange); }
+
+        /* Dark mode glow effect on stat cards */
+        [data-theme="dark"] .stat-card.blue   { box-shadow: 0 0 20px rgba(59,130,246,0.08); }
+        [data-theme="dark"] .stat-card.green  { box-shadow: 0 0 20px rgba(52,211,153,0.08); }
+        [data-theme="dark"] .stat-card.purple { box-shadow: 0 0 20px rgba(167,139,250,0.08); }
+        [data-theme="dark"] .stat-card.orange { box-shadow: 0 0 20px rgba(251,146,60,0.08); }
+
+        /* Pivot container */
+        .pivot-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+            flex: 1;
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            transition: background 0.25s, border-color 0.25s;
+        }
+
+        .pivot-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 18px;
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
+        }
+
+        .pivot-title {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            color: var(--text-3);
+            font-weight: 700;
+        }
+
+        .pivot-scroll {
+            overflow: auto;
+            flex: 1;
+        }
+
+        .pivot-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
+        .pivot-scroll::-webkit-scrollbar-track { background: var(--bg); }
+        .pivot-scroll::-webkit-scrollbar-thumb { background: var(--scrollbar); border-radius: 3px; }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.78rem;
+        }
+
+        thead th {
+            background: var(--bg-table-hd);
+            color: var(--text-th);
+            padding: 9px 12px;
+            text-align: right;
+            font-weight: 700;
+            position: sticky;
+            top: 0;
+            z-index: 2;
+            white-space: nowrap;
+            border-bottom: 2px solid var(--border);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            transition: background 0.25s;
+        }
+
+        thead th:first-child {
+            text-align: left;
+            left: 0;
+            z-index: 3;
+            min-width: 180px;
+        }
+
+        thead th.total-head { color: var(--accent); }
+
+        tbody tr { transition: background 0.08s; }
+        tbody tr:hover td { background: var(--hover-row); }
+
+        tbody td {
+            padding: 8px 12px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-td);
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+            transition: background 0.08s;
+        }
+
+        tbody td:first-child {
+            text-align: left;
+            color: var(--text);
+            font-weight: 500;
+            position: sticky;
+            left: 0;
+            background: var(--bg-sticky);
+            z-index: 1;
+            white-space: nowrap;
+            max-width: 220px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            transition: background 0.25s;
+        }
+
+        tbody tr:hover td:first-child { background: var(--hover-row); }
+
+        .total-row td {
+            background: var(--bg-total) !important;
+            color: var(--text) !important;
+            font-weight: 700;
+            border-top: 2px solid var(--border);
+            border-bottom: none;
+        }
+
+        .total-row td:first-child {
+            background: var(--bg-total) !important;
+            color: var(--text-2) !important;
+        }
+
+        .col-total { color: var(--accent) !important; font-weight: 700; }
+
+        .zero { color: var(--zero) !important; }
+
+        /* Loading / empty states */
+        .empty-state, .loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            min-height: 200px;
+            gap: 10px;
+        }
+
+        .empty-icon { font-size: 2rem; }
+
+        .empty-state p, .loading span {
+            font-size: 0.85rem;
+            color: var(--text-3);
+        }
+
+        .spinner {
+            width: 28px; height: 28px;
+            border: 3px solid var(--border);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* README */
+        #readme-view {
+            padding: 24px;
+            overflow-y: auto;
+            height: 100%;
+        }
+
+        .readme-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 24px;
+            max-width: 660px;
+            box-shadow: var(--shadow);
+        }
+
+        .readme-card h2 {
+            font-size: 0.8rem;
+            color: var(--text-2);
+            margin-bottom: 16px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+        }
+
+        .readme-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+
+        .readme-list li {
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 10px 14px 10px 34px;
+            font-size: 0.82rem;
+            color: var(--text-2);
+            position: relative;
+            line-height: 1.5;
+        }
+
+        .readme-list li::before {
+            content: '›';
+            position: absolute;
+            left: 13px;
+            color: var(--accent);
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        /* Dark mode special effects */
+        [data-theme="dark"] header {
+            background: linear-gradient(135deg, #0f1a2e 0%, #0b1120 100%);
+        }
+
+        [data-theme="dark"] .pivot-container {
+            box-shadow: 0 4px 32px rgba(59,130,246,0.05);
+        }
+
+        [data-theme="dark"] thead th {
+            border-bottom-color: #1e3a5f;
+        }
+
+        [data-theme="dark"] .btn-primary {
+            box-shadow: 0 0 20px rgba(59,130,246,0.3);
+        }
+
+        [data-theme="dark"] .btn-primary:hover {
+            box-shadow: 0 0 30px rgba(59,130,246,0.5);
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-logo">A</div>
+    <div>
+        <h1>Actuals Data &mdash; Self Service</h1>
+        <div class="header-sub">Worklog hours pivot &bull; Resource &times; Time Period</div>
+    </div>
+    <div class="header-right">
+        <span id="loadBadge" class="badge">Loading…</span>
+        <div class="dark-toggle" onclick="toggleDark()" title="Toggle dark mode">
+            <div class="toggle-track"><div class="toggle-thumb"></div></div>
+            <span id="darkLabel">Light Mode</span>
+        </div>
+        <div class="tabs">
+            <button class="tab active" onclick="showView('pivot')">Pivot View</button>
+            <button class="tab" onclick="showView('readme')">README</button>
+        </div>
+    </div>
+</header>
+
+<div class="layout">
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-scroll">
+            <div class="section-label">Filters</div>
+            <div style="font-size:0.68rem;color:var(--text-3);margin-bottom:10px;line-height:1.4;">
+                Hold <kbd style="font-family:inherit;background:var(--bg-input);border:1px solid var(--border);border-radius:3px;padding:1px 4px;font-size:0.66rem;">Ctrl</kbd>
+                (or <kbd style="font-family:inherit;background:var(--bg-input);border:1px solid var(--border);border-radius:3px;padding:1px 4px;font-size:0.66rem;">⌘</kbd> on Mac)
+                to select multiple values.
+            </div>
+
+            <div class="filter-group">
+                <label>Level 4 Manager</label>
+                <select id="level4" multiple onchange="updatePivot()"></select>
+            </div>
+            <div class="filter-group">
+                <label>Level 5 Manager</label>
+                <select id="level5" multiple onchange="updatePivot()"></select>
+            </div>
+            <div class="filter-group">
+                <label>Level 6 Manager</label>
+                <select id="level6" multiple onchange="updatePivot()"></select>
+            </div>
+            <div class="filter-group">
+                <label>Direct Manager</label>
+                <select id="dm" multiple onchange="updatePivot()"></select>
+            </div>
+            <div class="filter-group">
+                <label>Resource Name</label>
+                <select id="resource" multiple onchange="updatePivot()"></select>
+            </div>
+            <div class="filter-group">
+                <label>Issue Type</label>
+                <select id="issueType" multiple onchange="updatePivot()"></select>
+            </div>
+            <div class="filter-group">
+                <label>Month</label>
+                <select id="month" multiple onchange="updatePivot()"></select>
+            </div>
+            <div class="filter-group">
+                <label>Year</label>
+                <select id="year" multiple onchange="updatePivot()"></select>
+            </div>
+
+            <hr class="divider">
+
+            <div class="filter-row">
+                <div class="filter-group">
+                    <label>Min Hours</label>
+                    <input type="number" id="minHours" min="0" step="0.5" placeholder="0" oninput="updatePivot()">
+                </div>
+                <div class="filter-group">
+                    <label>Max Hours</label>
+                    <input type="number" id="maxHours" min="0" step="0.5" placeholder="∞" oninput="updatePivot()">
+                </div>
+            </div>
+
+            <hr class="divider">
+
+            <div class="section-label">Report Options</div>
+            <div class="filter-group">
+                <label>Group rows by</label>
+                <select id="rowDim" onchange="updateExtraColsOptions(); updatePivot();" style="height:auto;">
+                    <option value="Resource Name">Resource Name</option>
+                    <option value="Direct Manager">Direct Manager</option>
+                    <option value="Level 4 Mgr">Level 4 Manager</option>
+                    <option value="Level 5 Mgr">Level 5 Manager</option>
+                    <option value="Level 6 Mgr">Level 6 Manager</option>
+                    <option value="Issue Type">Issue Type</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>Additional columns</label>
+                <select id="extraCols" multiple onchange="updatePivot()"></select>
+            </div>
+        </div>
+
+        <div class="sidebar-actions">
+            <button class="btn btn-primary" onclick="downloadCsv()">↓ &nbsp;Download Pivot CSV</button>
+            <button class="btn btn-secondary" onclick="generateLink()">⬡ &nbsp;Copy Share Link</button>
+            <button class="btn btn-ghost" onclick="clearFilters()">✕ &nbsp;Clear Filters</button>
+            <div id="shareLinkBox" class="share-link-box" onclick="copyLink()"></div>
+        </div>
+    </div>
+
+    <!-- Main -->
+    <div class="main">
+
+        <div id="pivot-view">
+            <div class="stats-bar">
+                <div class="stat-card blue">
+                    <div class="stat-label">Rows Matched</div>
+                    <div class="stat-value" id="statRows">—</div>
+                </div>
+                <div class="stat-card green">
+                    <div class="stat-label">Total Hours</div>
+                    <div class="stat-value" id="statHours">—</div>
+                </div>
+                <div class="stat-card purple">
+                    <div class="stat-label" id="statRowsLabel">Resources</div>
+                    <div class="stat-value" id="statResources">—</div>
+                </div>
+                <div class="stat-card orange">
+                    <div class="stat-label">Time Periods</div>
+                    <div class="stat-value" id="statPeriods">—</div>
+                </div>
+            </div>
+
+            <div class="pivot-container">
+                <div class="pivot-header">
+                    <div class="pivot-title" id="pivotTitle">Resource Name &nbsp;×&nbsp; Period &nbsp;→&nbsp; Σ Worklog Hours</div>
+                </div>
+                <div class="pivot-scroll">
+                    <div id="pivotTable">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                            <span>Loading data…</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="readme-view" style="display:none;">
+            <div class="readme-card">
+                <h2>Data Caveats &amp; Nuances</h2>
+                <ul class="readme-list">
+                    <li>Data is dummy and for testing purposes only.</li>
+                    <li>Worklog hours may not reflect actual time spent due to rounding.</li>
+                    <li>Some entries may have missing roadmap mappings (orphans).</li>
+                    <li>Hierarchy levels are simulated and may not match real organizational structure.</li>
+                    <li>Issue keys are randomly generated and may not correspond to real tickets.</li>
+                    <li>Account keys follow a specific format but are fictional.</li>
+                    <li>Data covers 2024–2026 with weighted distribution towards recent periods.</li>
+                    <li>The pivot groups by Resource Name and sums Worklog Hours per month/year column.</li>
+                    <li>Downloading exports the pivot as displayed, including row and grand totals.</li>
+                    <li>Hold Ctrl (or Cmd) to select multiple values in any filter list.</li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const IN_GAS = typeof google !== 'undefined' && google.script && google.script.run;
+
+const ALL_DIMS = [
+    { value: 'Level 4 Mgr',   label: 'Level 4 Manager' },
+    { value: 'Level 5 Mgr',   label: 'Level 5 Manager' },
+    { value: 'Level 6 Mgr',   label: 'Level 6 Manager' },
+    { value: 'Direct Manager', label: 'Direct Manager' },
+    { value: 'Resource Name',  label: 'Resource Name' },
+    { value: 'Issue Type',     label: 'Issue Type' },
+];
+
+function updateExtraColsOptions() {
+    const rowDim = getRowDim();
+    const sel    = document.getElementById('extraCols');
+    const prev   = [...sel.selectedOptions].map(o => o.value);
+    sel.innerHTML = ALL_DIMS
+        .filter(d => d.value !== rowDim)
+        .map(d => `<option value="${esc(d.value)}"${prev.includes(d.value) ? ' selected' : ''}>${esc(d.label)}</option>`)
+        .join('');
+}
+
+let allData      = [];
+let filteredData = [];
+let filterDebounce = null;
+
+function logEvent(action) {
+    if (!IN_GAS) return;
+    google.script.run.logAnalytics(action);
+}
+
+// ── Dark mode ─────────────────────────────────────────────────────────────────
+function toggleDark() {
+    const html = document.documentElement;
+    const dark = html.getAttribute('data-theme') === 'dark';
+    html.setAttribute('data-theme', dark ? 'light' : 'dark');
+    document.getElementById('darkLabel').textContent = dark ? 'Dark Mode' : 'Light Mode';
+    try { localStorage.setItem('theme', dark ? 'light' : 'dark'); } catch(e) {}
+}
+
+(function() {
+    try {
+        const saved = localStorage.getItem('theme');
+        if (saved === 'light') {
+            document.documentElement.setAttribute('data-theme', 'light');
+        }
+        // else: dark is already set on the html element by default
+    } catch(e) {}
+})();
+
+// ── Bootstrap — data loaded async via google.script.run ──────────────────────
+document.addEventListener('DOMContentLoaded', function () {
+    if (!IN_GAS) {
+        document.getElementById('loadBadge').textContent = 'Not in GAS';
+        document.getElementById('loadBadge').className = 'badge err';
+        return;
+    }
+
+    google.script.run
+        .withSuccessHandler(function (result) {
+            try {
+                // Server returns compact array-of-arrays; reconstruct objects
+                const headers = result.headers;
+                allData = result.rows.map(function (arr) {
+                    const obj = {};
+                    headers.forEach(function (h, i) { obj[h] = arr[i]; });
+                    return obj;
+                });
+                populateFilters();
+                updateExtraColsOptions();
+                loadUrlParams();
+                updatePivot();
+                const badge = document.getElementById('loadBadge');
+                badge.textContent = allData.length.toLocaleString() + ' rows loaded';
+                badge.className = 'badge ok';
+                logEvent('page_load');
+            } catch (e) {
+                document.getElementById('loadBadge').textContent = 'Load error';
+                document.getElementById('loadBadge').className = 'badge err';
+                document.getElementById('pivotTable').innerHTML =
+                    '<div class="empty-state"><div class="empty-icon">⚠️</div>' +
+                    '<p>Error processing data: ' + e.message + '</p></div>';
+                console.error(e);
+            }
+        })
+        .withFailureHandler(function (e) {
+            document.getElementById('loadBadge').textContent = 'Load error';
+            document.getElementById('loadBadge').className = 'badge err';
+            document.getElementById('pivotTable').innerHTML =
+                '<div class="empty-state"><div class="empty-icon">⚠️</div>' +
+                '<p>' + (e.message || 'Failed to load data') + '</p>' +
+                '<p style="font-size:0.75rem;margin-top:8px;color:var(--text-3)">Open the Script Editor and run <strong>testDataAccess()</strong> to verify permissions.</p></div>';
+            console.error(e);
+        })
+        .getActualsData();
+});
+
+// ── Filters ───────────────────────────────────────────────────────────────────
+function populateFilters() {
+    const uniq = {
+        'Level 4 Mgr': new Set(), 'Level 5 Mgr': new Set(), 'Level 6 Mgr': new Set(),
+        'Direct Manager': new Set(), 'Resource Name': new Set(),
+        'Issue Type': new Set(), 'Month of Worklog': new Set(), 'Year of Worklog': new Set()
+    };
+    allData.forEach(row => Object.keys(uniq).forEach(k => { if (row[k]) uniq[k].add(row[k]); }));
+
+    fillSelect('level4',    [...uniq['Level 4 Mgr']].sort());
+    fillSelect('level5',    [...uniq['Level 5 Mgr']].sort());
+    fillSelect('level6',    [...uniq['Level 6 Mgr']].sort());
+    fillSelect('dm',        [...uniq['Direct Manager']].sort());
+    fillSelect('resource',  [...uniq['Resource Name']].sort());
+    fillSelect('issueType', [...uniq['Issue Type']].sort());
+    fillSelect('month',     [...uniq['Month of Worklog']].sort((a, b) => MONTHS.indexOf(a) - MONTHS.indexOf(b)));
+    fillSelect('year',      [...uniq['Year of Worklog']].sort());
+}
+
+function fillSelect(id, opts) {
+    document.getElementById(id).innerHTML = opts.map(o => `<option value="${esc(o)}">${esc(o)}</option>`).join('');
+}
+
+function getSelected(id) {
+    return [...document.getElementById(id).selectedOptions].map(o => o.value);
+}
+
+function getFilters() {
+    return {
+        'Level 4 Mgr':      getSelected('level4'),
+        'Level 5 Mgr':      getSelected('level5'),
+        'Level 6 Mgr':      getSelected('level6'),
+        'Direct Manager':   getSelected('dm'),
+        'Resource Name':    getSelected('resource'),
+        'Issue Type':       getSelected('issueType'),
+        'Month of Worklog': getSelected('month'),
+        'Year of Worklog':  getSelected('year'),
+        minHours: parseFloat(document.getElementById('minHours').value) || 0,
+        maxHours: parseFloat(document.getElementById('maxHours').value) || Infinity
+    };
+}
+
+function filterData(f) {
+    return allData.filter(row => {
+        const h = parseFloat(row['Worklog Hours']) || 0;
+        return (
+            (!f['Level 4 Mgr'].length    || f['Level 4 Mgr'].includes(row['Level 4 Mgr'])) &&
+            (!f['Level 5 Mgr'].length    || f['Level 5 Mgr'].includes(row['Level 5 Mgr'])) &&
+            (!f['Level 6 Mgr'].length    || f['Level 6 Mgr'].includes(row['Level 6 Mgr'])) &&
+            (!f['Direct Manager'].length || f['Direct Manager'].includes(row['Direct Manager'])) &&
+            (!f['Resource Name'].length  || f['Resource Name'].includes(row['Resource Name'])) &&
+            (!f['Issue Type'].length     || f['Issue Type'].includes(row['Issue Type'])) &&
+            (!f['Month of Worklog'].length || f['Month of Worklog'].includes(row['Month of Worklog'])) &&
+            (!f['Year of Worklog'].length  || f['Year of Worklog'].includes(row['Year of Worklog'])) &&
+            h >= f.minHours && h <= f.maxHours
+        );
+    });
+}
+
+// ── Pivot ─────────────────────────────────────────────────────────────────────
+function updatePivot() {
+    if (!allData.length) return;
+    filteredData = filterData(getFilters());
+    renderPivot(filteredData);
+    clearTimeout(filterDebounce);
+    filterDebounce = setTimeout(() => logEvent('filter_changed'), 2000);
+}
+
+function getRowDim() {
+    const el = document.getElementById('rowDim');
+    return el ? el.value : 'Resource Name';
+}
+
+function buildPivot(rows) {
+    const rowDim    = getRowDim();
+    const extraCols = [...document.getElementById('extraCols').selectedOptions].map(o => o.value);
+    const periodMap = {};
+    const matrix    = {};
+    const extraMap  = {}; // rowKey → { colName: firstSeenValue }
+
+    rows.forEach(row => {
+        const res   = row[rowDim];
+        const mIdx  = MONTHS.indexOf(row['Month of Worklog']);
+        const yr    = row['Year of Worklog'];
+        const hours = parseFloat(row['Worklog Hours']) || 0;
+        if (!res || mIdx === -1 || !yr) return;
+
+        const sortKey = yr + '-' + String(mIdx + 1).padStart(2, '0');
+        periodMap[sortKey] = MONTHS[mIdx].slice(0, 3) + ' ' + yr;
+
+        if (!matrix[res]) matrix[res] = {};
+        matrix[res][sortKey] = (matrix[res][sortKey] || 0) + hours;
+
+        if (!extraMap[res]) {
+            extraMap[res] = {};
+            extraCols.forEach(col => { extraMap[res][col] = row[col] || ''; });
+        }
+    });
+
+    const periods   = Object.keys(periodMap).sort();
+    const resources = Object.keys(matrix).sort();
+    return { periods, periodMap, matrix, resources, rowDim, extraCols, extraMap };
+}
+
+function renderPivot(rows) {
+    const rowDim          = getRowDim();
+    const totalHours      = rows.reduce((s, r) => s + (parseFloat(r['Worklog Hours']) || 0), 0);
+    const uniqueRowVals   = new Set(rows.map(r => r[rowDim])).size;
+    const { periods, periodMap, matrix, resources, extraCols, extraMap } = buildPivot(rows);
+
+    document.getElementById('statRows').textContent      = rows.length.toLocaleString();
+    document.getElementById('statHours').textContent     = fmt(totalHours);
+    document.getElementById('statResources').textContent = uniqueRowVals.toLocaleString();
+    document.getElementById('statPeriods').textContent   = periods.length.toLocaleString();
+    document.getElementById('statRowsLabel').textContent = rowDim;
+    document.getElementById('pivotTitle').innerHTML      = esc(rowDim) + ' &nbsp;×&nbsp; Period &nbsp;→&nbsp; Σ Worklog Hours';
+
+    const el = document.getElementById('pivotTable');
+
+    if (!rows.length) {
+        el.innerHTML = `<div class="empty-state"><div class="empty-icon">◇</div><p>No data matches the current filters.</p></div>`;
+        return;
+    }
+
+    // Build header: rowDim + extra cols + time periods + total
+    const dimLabel = { 'Level 4 Mgr': 'L4 Mgr', 'Level 5 Mgr': 'L5 Mgr', 'Level 6 Mgr': 'L6 Mgr',
+                       'Direct Manager': 'DM', 'Resource Name': 'Resource', 'Issue Type': 'Issue Type' };
+    let html = '<table><thead><tr><th>' + esc(rowDim) + '</th>';
+    extraCols.forEach(col => { html += `<th>${esc(dimLabel[col] || col)}</th>`; });
+    periods.forEach(p => { html += `<th>${esc(periodMap[p])}</th>`; });
+    html += '<th class="total-head">Total</th></tr></thead><tbody>';
+
+    resources.forEach(res => {
+        const rowTotal = periods.reduce((s, p) => s + (matrix[res][p] || 0), 0);
+        html += `<tr><td title="${esc(res)}">${esc(res)}</td>`;
+        extraCols.forEach(col => { html += `<td style="color:var(--text-2)">${esc((extraMap[res] || {})[col] || '')}</td>`; });
+        periods.forEach(p => {
+            const v = matrix[res][p] || 0;
+            html += `<td>${v === 0 ? '<span class="zero">—</span>' : fmt(v)}</td>`;
+        });
+        html += `<td class="col-total">${fmt(rowTotal)}</td></tr>`;
+    });
+
+    const grandTotals = periods.map(p => resources.reduce((s, r) => s + (matrix[r][p] || 0), 0));
+    html += '<tr class="total-row"><td>Grand Total</td>';
+    grandTotals.forEach(t => { html += `<td>${fmt(t)}</td>`; });
+    html += `<td class="col-total">${fmt(totalHours)}</td></tr>`;
+    html += '</tbody></table>';
+
+    el.innerHTML = html;
+}
+
+// ── Download ──────────────────────────────────────────────────────────────────
+function downloadCsv() {
+    if (!filteredData.length) { alert('No data to download — adjust your filters.'); return; }
+    logEvent('download_csv');
+    const { periods, periodMap, matrix, resources, rowDim, extraCols, extraMap } = buildPivot(filteredData);
+    const csvRows = [[rowDim, ...extraCols, ...periods.map(p => periodMap[p]), 'Total']];
+    resources.forEach(res => {
+        const rowTotal  = periods.reduce((s, p) => s + (matrix[res][p] || 0), 0);
+        const extraVals = extraCols.map(col => (extraMap[res] || {})[col] || '');
+        csvRows.push([res, ...extraVals, ...periods.map(p => round(matrix[res][p] || 0)), round(rowTotal)]);
+    });
+    const grandTotals = periods.map(p => resources.reduce((s, r) => s + (matrix[r][p] || 0), 0));
+    csvRows.push(['Grand Total', ...grandTotals.map(round), round(grandTotals.reduce((a, b) => a + b, 0))]);
+
+    const csv  = csvRows.map(r => r.map(c => `"${c}"`).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const a    = document.createElement('a');
+    a.href     = URL.createObjectURL(blob);
+    a.download = 'actuals_pivot_' + rowDim.toLowerCase().replace(/\s+/g, '_') + '.csv';
+    a.click();
+}
+
+// ── Share link ────────────────────────────────────────────────────────────────
+function generateLink() {
+    const params = new URLSearchParams();
+    ['level4','level5','level6','dm','resource','issueType','month','year'].forEach(id => {
+        const v = getSelected(id);
+        if (v.length) params.set(id, v.join(','));
+    });
+    const rowDim   = document.getElementById('rowDim').value;
+    if (rowDim !== 'Resource Name') params.set('rowDim', rowDim);
+    const extraV = [...document.getElementById('extraCols').selectedOptions].map(o => o.value);
+    if (extraV.length) params.set('extraCols', extraV.join(','));
+    const min = document.getElementById('minHours').value;
+    const max = document.getElementById('maxHours').value;
+    if (min) params.set('minHours', min);
+    if (max) params.set('maxHours', max);
+
+    const url = window.location.href.split('?')[0] + (params.toString() ? '?' + params : '');
+    const box = document.getElementById('shareLinkBox');
+    box.textContent = url;
+    box.style.display = 'block';
+    navigator.clipboard.writeText(url).catch(() => {});
+    logEvent('share_link');
+}
+
+function copyLink() {
+    const box  = document.getElementById('shareLinkBox');
+    const orig = box.textContent;
+    navigator.clipboard.writeText(orig).then(() => {
+        box.textContent = '✓ Copied to clipboard!';
+        setTimeout(() => { box.textContent = orig; }, 1800);
+    });
+}
+
+function loadUrlParams() {
+    const params = new URLSearchParams(window.location.search);
+    ['level4','level5','level6','dm','resource','issueType','month','year'].forEach(id => {
+        const v = params.get(id);
+        if (!v) return;
+        const sel = document.getElementById(id);
+        v.split(',').forEach(val => {
+            const opt = [...sel.options].find(o => o.value === val);
+            if (opt) opt.selected = true;
+        });
+    });
+    if (params.get('minHours')) document.getElementById('minHours').value = params.get('minHours');
+    if (params.get('maxHours')) document.getElementById('maxHours').value = params.get('maxHours');
+    if (params.get('rowDim')) {
+        const sel = document.getElementById('rowDim');
+        const opt = [...sel.options].find(o => o.value === params.get('rowDim'));
+        if (opt) { opt.selected = true; updateExtraColsOptions(); }
+    }
+    if (params.get('extraCols')) {
+        const vals = params.get('extraCols').split(',');
+        const sel  = document.getElementById('extraCols');
+        vals.forEach(v => {
+            const opt = [...sel.options].find(o => o.value === v);
+            if (opt) opt.selected = true;
+        });
+    }
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function clearFilters() {
+    ['level4','level5','level6','dm','resource','issueType','month','year','extraCols'].forEach(id => {
+        [...document.getElementById(id).options].forEach(o => o.selected = false);
+    });
+    document.getElementById('minHours').value = '';
+    document.getElementById('maxHours').value = '';
+    document.getElementById('shareLinkBox').style.display = 'none';
+    logEvent('clear_filters');
+    updatePivot();
+}
+
+function showView(view) {
+    document.getElementById('pivot-view').style.display  = view === 'pivot'  ? 'flex'  : 'none';
+    document.getElementById('readme-view').style.display = view === 'readme' ? 'block' : 'none';
+    document.querySelectorAll('.tab').forEach((t, i) =>
+        t.classList.toggle('active', (i === 0 && view === 'pivot') || (i === 1 && view === 'readme'))
+    );
+}
+
+function fmt(n)   { return n.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 1 }); }
+function round(n) { return Math.round(n * 10) / 10; }
+function esc(s)   {
+    return String(s)
+        .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+</body>
+</html>
