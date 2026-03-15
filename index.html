@@ -843,7 +843,7 @@
 
 <script>
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxEhCevfNO9k5pSsLYYJLKHmr-2HalJ3M9XLyU2_siyTYZOmGa1JuJibxOQPNi8I_aXfw/exec';
+const CSV_URL = 'https://docs.google.com/spreadsheets/d/1j165dsa1a-DDapOCgyBLrJQ_UBa4LzCWdWez4_obLD0/export?format=csv&gid=1768057434';
 
 const ALL_DIMS = [
     { value: 'Level 4 Mgr',   label: 'Level 4 Manager' },
@@ -891,18 +891,14 @@ function toggleDark() {
     } catch(e) {}
 })();
 
-// ── Bootstrap — data loaded via fetch to Apps Script API ─────────────────────
+// ── Bootstrap — data loaded via CSV from Google Sheets ───────────────────────
 document.addEventListener('DOMContentLoaded', function () {
-    fetch(APPS_SCRIPT_URL)
-        .then(function(r) { return r.json(); })
-        .then(function(result) {
+    Papa.parse(CSV_URL, {
+        download: true,
+        header: true,
+        complete: function(results) {
             try {
-                const headers = result.headers;
-                allData = result.rows.map(function (arr) {
-                    const obj = {};
-                    headers.forEach(function (h, i) { obj[h] = arr[i]; });
-                    return obj;
-                });
+                allData = results.data.filter(row => row['Resource Name'] && row['Resource Name'].trim());
                 populateFilters();
                 updateExtraColsOptions();
                 loadUrlParams();
@@ -918,16 +914,17 @@ document.addEventListener('DOMContentLoaded', function () {
                     '<p>Error processing data: ' + e.message + '</p></div>';
                 console.error(e);
             }
-        })
-        .catch(function(e) {
+        },
+        error: function(e) {
             document.getElementById('loadBadge').textContent = 'Load error';
             document.getElementById('loadBadge').className = 'badge err';
             document.getElementById('pivotTable').innerHTML =
                 '<div class="empty-state"><div class="empty-icon">⚠️</div>' +
                 '<p>' + (e.message || 'Failed to load data') + '</p>' +
-                '<p style="font-size:0.75rem;margin-top:8px;color:var(--text-3)">Check that the Apps Script is deployed correctly.</p></div>';
+                '<p style="font-size:0.75rem;margin-top:8px;color:var(--text-3)">Check that the spreadsheet is shared publicly.</p></div>';
             console.error(e);
-        });
+        }
+    });
 });
 
 // ── Filters ───────────────────────────────────────────────────────────────────
@@ -1193,5 +1190,6 @@ function esc(s)   {
         .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 </body>
 </html>
