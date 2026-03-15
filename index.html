@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Downloader</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="dark-mode-bar">
+            <span class="dm-tagline" id="dmTagline">✨ Way cooler in dark mode, just saying.</span>
+            <label class="toggle-switch" aria-label="Toggle dark mode">
+                <input type="checkbox" id="darkModeToggle">
+                <span class="toggle-track"></span>
+            </label>
+        </div>
+        <h1>Self-Service Data Downloader</h1>
+
+<div class="tabs">
+            <button class="tab-button active" onclick="showTab(event, 'filters')">Filters & Download</button>
+            <button class="tab-button" onclick="showTab(event, 'readme')">README</button>
+        </div>
+        <div id="filters-tab" class="tab-content">
+            <div class="filters">
+                <div class="filter-group">
+                    <label for="level4">Level 4 Mgr:</label>
+                    <select id="level4" multiple></select>
+                </div>
+                <div class="filter-group">
+                    <label for="level5">Level 5 Mgr:</label>
+                    <select id="level5" multiple></select>
+                </div>
+                <div class="filter-group">
+                    <label for="level6">Level 6 Mgr:</label>
+                    <select id="level6" multiple></select>
+                </div>
+                <div class="filter-group">
+                    <label for="dm">Direct Manager:</label>
+                    <select id="dm" multiple></select>
+                </div>
+                <div class="filter-group">
+                    <label for="resource">Resource Name:</label>
+                    <select id="resource" multiple></select>
+                </div>
+                <div class="filter-group">
+                    <label for="issueType">Issue Type:</label>
+                    <select id="issueType" multiple></select>
+                </div>
+                <div class="filter-group">
+                    <label for="month">Month of Worklog:</label>
+                    <select id="month" multiple></select>
+                </div>
+                <div class="filter-group">
+                    <label for="year">Year of Worklog:</label>
+                    <select id="year" multiple></select>
+                </div>
+                <div class="filter-group">
+                    <label for="minHours">Min Worklog Hours:</label>
+                    <input type="number" id="minHours" min="0" step="0.5">
+                </div>
+                <div class="filter-group">
+                    <label for="maxHours">Max Worklog Hours:</label>
+                    <input type="number" id="maxHours" min="0" step="0.5">
+                </div>
+            </div>
+            <div class="actions">
+                <button id="applyFilters">Apply Filters</button>
+                <button id="downloadCsv">Download CSV</button>
+                <button id="generateLink">Generate Shareable Link</button>
+            </div>
+            <div id="results">
+                <p id="rowCount">Total rows: 0</p>
+                <div id="linkContainer" style="display:none;">
+                    <p>Shareable Link: <a id="shareableLink" href="#" target="_blank"></a></p>
+                </div>
+            </div>
+        </div>
+        <div id="readme-tab" class="tab-content" style="display:none;">
+            <h2>Data Caveats and Nuances</h2>
+            <ul>
+                <li>Data is dummy and for testing purposes only.</li>
+                <li>Worklog hours may not reflect actual time spent due to rounding.</li>
+                <li>Some entries may have missing roadmap mappings (orphans).</li>
+                <li>Hierarchy levels are simulated and may not match real organizational structure.</li>
+                <li>Issue keys are randomly generated and may not correspond to real tickets.</li>
+                <li>Account keys follow a specific format but are fictional.</li>
+                <li>Data covers 2024-2026 with weighted distribution towards recent periods.</li>
+                <li>Filtering is case-sensitive for text fields.</li>
+                <li>Downloads are limited to filtered results only.</li>
+            </ul>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <script src="script.js"></script>
+    <script>
+        (function () {
+            const toggle = document.getElementById('darkModeToggle');
+            const tagline = document.getElementById('dmTagline');
+
+            const LIGHT_MSG = '✨ Way cooler in dark mode, just saying.';
+            const DARK_MSG  = '🌙 Welcome to the cool side. You belong here.';
+
+            function applyMode(dark) {
+                document.body.classList.toggle('dark-mode', dark);
+                toggle.checked = dark;
+                tagline.textContent = dark ? DARK_MSG : LIGHT_MSG;
+            }
+
+            // Restore saved preference
+            const saved = localStorage.getItem('darkMode');
+            if (saved === 'true') applyMode(true);
+
+            toggle.addEventListener('change', function () {
+                const isDark = toggle.checked;
+                applyMode(isDark);
+                localStorage.setItem('darkMode', isDark);
+            });
+        })();
+    </script>
+</body>
+</html>
