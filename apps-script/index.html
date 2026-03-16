@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -687,7 +687,7 @@
         <span id="loadBadge" class="badge">Loading…</span>
         <div class="dark-toggle" onclick="toggleDark()" title="Toggle dark mode">
             <div class="toggle-track"><div class="toggle-thumb"></div></div>
-            <span id="darkLabel">Light Mode</span>
+            <span id="darkLabel">Dark Mode</span>
         </div>
         <div class="tabs">
             <button class="tab active" onclick="showView('pivot')">Pivot View</button>
@@ -884,11 +884,10 @@ function toggleDark() {
 
 (function() {
     try {
-        const saved = localStorage.getItem('theme');
-        if (saved === 'light') {
-            document.documentElement.setAttribute('data-theme', 'light');
-        }
-        // else: dark is already set on the html element by default
+        const saved = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', saved);
+        const lbl = document.getElementById('darkLabel');
+        if (lbl) lbl.textContent = saved === 'dark' ? 'Light Mode' : 'Dark Mode';
     } catch(e) {}
 })();
 
